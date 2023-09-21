@@ -1,5 +1,6 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
+const { log } = require("console");
 
 let authors = [
   {
@@ -101,7 +102,7 @@ const typeDefs = `
   type Query {
     bookCount: Int!
     authorCount: Int!
-    allBooks(author: String): [Book]
+    allBooks(author: String, genre: String): [Book]
     allAuthors: [AuthorWCount]
   }
 
@@ -127,6 +128,15 @@ const typeDefs = `
   }
 `;
 
+// let toReturn = { ...books };
+// if (args.genre) {
+//   toReturn = toReturn.filter((b) => b.genres === args.genre);
+// }
+// if (args.author) {
+//   toReturn = toReturn.filter((b) => b.author === args.author);
+// }
+// return toReturn;
+
 const resolvers = {
   Query: {
     bookCount: () => {
@@ -136,7 +146,15 @@ const resolvers = {
       return authors.length;
     },
     allBooks: (root, args) => {
-      const toReturn = books.filter((b) => b.author === args.author);
+      let toReturn = books;
+      if (args.genre) {
+        console.log("On genre");
+        toReturn = toReturn.filter((b) => b.genres.includes(args.genre));
+      }
+      if (args.author) {
+        console.log("On Authori");
+        toReturn = toReturn.filter((b) => b.author === args.author);
+      }
       return toReturn;
     },
     allAuthors: () => {
