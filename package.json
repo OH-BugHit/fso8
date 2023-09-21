@@ -1,0 +1,27 @@
+{
+  "name": "library",
+  "version": "1.0.0",
+  "description": "FullStackOpenP8",
+  "main": "library_backend.js",
+  "scripts": {
+    "dev": " nodemon library_backend",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OH-BugHit/fso8.git"
+  },
+  "author": "Olli Hilke",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OH-BugHit/fso8/issues"
+  },
+  "homepage": "https://github.com/OH-BugHit/fso8#readme",
+  "dependencies": {
+    "@apollo/server": "^4.9.3",
+    "graphql": "^16.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
