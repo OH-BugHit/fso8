@@ -19,7 +19,8 @@
   "homepage": "https://github.com/OH-BugHit/fso8#readme",
   "dependencies": {
     "@apollo/server": "^4.9.3",
-    "graphql": "^16.8.1"
+    "graphql": "^16.8.1",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
