@@ -33,14 +33,6 @@ let authors = [
  * Suomi:
  * Saattaisi olla järkevämpää assosioida kirja ja sen tekijä tallettamalla kirjan yhteyteen tekijän nimen sijaan tekijän id
  * Yksinkertaisuuden vuoksi tallennamme kuitenkin kirjan yhteyteen tekijän nimen
- *
- * English:
- * It might make more sense to associate a book with its author by storing the author's id in the context of the book instead of the author's name
- * However, for simplicity, we will store the author's name in connection with the book
- *
- * Spanish:
- * Podría tener más sentido asociar un libro con su autor almacenando la id del autor en el contexto del libro en lugar del nombre del autor
- * Sin embargo, por simplicidad, almacenaremos el nombre del autor en conección con el libro
  */
 
 let books = [
@@ -95,10 +87,6 @@ let books = [
   },
 ];
 
-/*
-  you can remove the placeholder query once your first one has been implemented 
-*/
-
 const typeDefs = `
   type Mutation {
     addBook(
@@ -107,6 +95,10 @@ const typeDefs = `
       published: Int!
       genres: [String!]
     ): Book
+    editAuthor(
+      name: String!
+      setBornTo: Int!
+    ) : Author
   }
 
   type Query {
@@ -137,15 +129,6 @@ const typeDefs = `
     born: Int
   }
 `;
-
-// let toReturn = { ...books };
-// if (args.genre) {
-//   toReturn = toReturn.filter((b) => b.genres === args.genre);
-// }
-// if (args.author) {
-//   toReturn = toReturn.filter((b) => b.author === args.author);
-// }
-// return toReturn;
 
 const resolvers = {
   Query: {
@@ -192,6 +175,19 @@ const resolvers = {
         authors = authors.concat(author);
       }
       return book;
+    },
+    editAuthor: (root, args) => {
+      const author = authors.find((p) => p.name === args.name);
+      if (author) {
+        console.log("Author ennen muutosta");
+        console.log(author);
+        id = author.id;
+        author.born = args.setBornTo;
+        console.log("Author muutoksen jälkeen");
+        console.log(author);
+        authors = authors.map((auth) => (auth.id !== id ? auth : author));
+        return author;
+      }
     },
   },
 };
