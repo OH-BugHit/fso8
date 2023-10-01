@@ -154,6 +154,7 @@ const resolvers = {
     },
 
     allAuthors: () => {
+      console.log("Fetching all authors...");
       const authorWithBookCount = authors.map((a) => ({
         name: a.name,
         id: a.id,
