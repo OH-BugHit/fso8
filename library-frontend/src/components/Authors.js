@@ -1,13 +1,11 @@
 import { gql, useQuery, useMutation } from "@apollo/client";
-import { parse } from "graphql";
+import Select from "react-select";
 import { useState } from "react";
 
 const Authors = () => {
   let authors = [];
 
-  const [name, setName] = useState("");
-  const [born, setBorn] = useState("");
-
+  //GraphicQL kysely. Muoto on helppo kopioda ApolloServer-sandboxista.
   const ALL_AUTHORS = gql`
     query {
       bookCount
@@ -20,6 +18,7 @@ const Authors = () => {
     }
   `;
 
+  //Mutaation editAuthor toteutus.
   const UPDATE_AUTHOR = gql`
     mutation EditAuthor($name: String!, $setBornTo: Int!) {
       editAuthor(name: $name, setBornTo: $setBornTo) {
@@ -29,25 +28,38 @@ const Authors = () => {
     }
   `;
 
+  const [born, setBorn] = useState("");
   const [editAuthor] = useMutation(UPDATE_AUTHOR);
+  const [selectedOption, setSelectedOption] = useState(null);
 
+  //pollIntervall kyselee kun komponentti(nimenomainen sivu) on "aktiivinen"
   const result = useQuery(ALL_AUTHORS, { pollInterval: 2000 });
 
+  //Kun lataa vielä tulosta
   if (result.loading) {
     return <div>loading...</div>;
   }
 
+  //Ja kun ladattu niin asetetaan muuttujaan
   authors = result.data.allAuthors;
 
+  //Perus onSubmit
   const submit = async (event) => {
     event.preventDefault();
     console.log("add book...");
     editAuthor({
-      variables: { name, setBornTo: born },
+      variables: { name: selectedOption, setBornTo: born },
     });
-    setName("");
     setBorn("");
   };
+
+  //Perus handleri
+  const handleBornChange = (event) => {
+    setSelectedOption(event.value);
+  };
+
+  // Tekijän nimilistan muodostus Selectille
+  var names = authors.map((a) => (a = { value: a.name, label: a.name }));
 
   return (
     <div>
@@ -73,9 +85,10 @@ const Authors = () => {
         <form onSubmit={submit}>
           <div>
             name
-            <input
-              value={name}
-              onChange={({ target }) => setName(target.value)}
+            <Select
+              defaultValue={selectedOption}
+              onChange={handleBornChange}
+              options={names}
             />
           </div>
           <div>
