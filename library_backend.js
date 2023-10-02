@@ -141,6 +141,7 @@ const resolvers = {
     },
 
     allBooks: (root, args) => {
+      console.log("Fetching books...");
       let toReturn = books;
       if (args.genre) {
         console.log("On genre");
@@ -167,6 +168,7 @@ const resolvers = {
   Mutation: {
     addBook: (root, args) => {
       const book = { ...args, id: uuid() };
+      console.log("Adding new book...", book);
       books = books.concat(book);
       if (!authors.includes(args.author)) {
         const author = {
