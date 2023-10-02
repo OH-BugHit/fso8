@@ -1,7 +1,12 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useMutation } from "@apollo/client";
+import { parse } from "graphql";
+import { useState } from "react";
 
 const Authors = () => {
   let authors = [];
+
+  const [name, setName] = useState("");
+  const [born, setBorn] = useState("");
 
   const ALL_AUTHORS = gql`
     query {
@@ -15,6 +20,17 @@ const Authors = () => {
     }
   `;
 
+  const UPDATE_AUTHOR = gql`
+    mutation EditAuthor($name: String!, $setBornTo: Int!) {
+      editAuthor(name: $name, setBornTo: $setBornTo) {
+        born
+        name
+      }
+    }
+  `;
+
+  const [editAuthor] = useMutation(UPDATE_AUTHOR);
+
   const result = useQuery(ALL_AUTHORS, { pollInterval: 2000 });
 
   if (result.loading) {
@@ -22,6 +38,16 @@ const Authors = () => {
   }
 
   authors = result.data.allAuthors;
+
+  const submit = async (event) => {
+    event.preventDefault();
+    console.log("add book...");
+    editAuthor({
+      variables: { name, setBornTo: born },
+    });
+    setName("");
+    setBorn("");
+  };
 
   return (
     <div>
@@ -42,6 +68,26 @@ const Authors = () => {
           ))}
         </tbody>
       </table>
+      <div>
+        <h2>Set birthyear</h2>
+        <form onSubmit={submit}>
+          <div>
+            name
+            <input
+              value={name}
+              onChange={({ target }) => setName(target.value)}
+            />
+          </div>
+          <div>
+            born
+            <input
+              value={born}
+              onChange={({ target }) => setBorn(parseInt(target.value))}
+            />
+          </div>
+          <button type="submit">update author</button>
+        </form>
+      </div>
     </div>
   );
 };
