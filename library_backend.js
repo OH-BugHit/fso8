@@ -87,8 +87,7 @@ const resolvers = {
 
     allBooks: async (root, args) => {
       console.log("Fetching books...");
-      /*
-      let toReturn = books;
+      let toReturn = await getAllBooks();
       if (args.genre) {
         console.log("On genre");
         toReturn = toReturn.filter((b) => b.genres.includes(args.genre));
@@ -98,8 +97,6 @@ const resolvers = {
         toReturn = toReturn.filter((b) => b.author === args.author);
       }
       return toReturn;
-      */
-      return Book.find({});
     },
 
     allAuthors: async () => {
@@ -134,7 +131,8 @@ const resolvers = {
     },
 
     editAuthor: async (root, args) => {
-      const author = authors.find((p) => p.name === args.name);
+      let authorList = await getAllAuthors();
+      const author = authorList.find((p) => p.name === args.name);
       if (author) {
         console.log("Author ennen muutosta");
         console.log(author);
@@ -142,8 +140,8 @@ const resolvers = {
         author.born = args.setBornTo;
         console.log("Author muutoksen jälkeen");
         console.log(author);
-        authors = authors.map((auth) => (auth.id !== id ? auth : author));
-        return author;
+        authorList = authorList.map((auth) => (auth.id !== id ? auth : author));
+        return author.save();
       }
     },
   },
