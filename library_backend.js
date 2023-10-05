@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 const Book = require("./src/models/bookSchema");
 const Author = require("./src/models/AuthorSchema");
+const { GraphQLError } = require("graphql");
 
 //Toimiva vaihe. Ei talleta tosin vielä bookiin Author ia eli siinä menossa.
 
@@ -123,11 +124,35 @@ const resolvers = {
         const author = new Author({
           name: args.author,
         });
-        await author.save();
+        try {
+          await author.save();
+        } catch (e) {
+          console.log("addBook catch tehty");
+          throw new GraphQLError("Adding book failed", {
+            extensions: {
+              code: "BAD_USER_INPUT",
+              invalidArgs: args.name,
+              e,
+            },
+          });
+        }
       }
       const book = new Book({ ...args, author: args.author });
       console.log("Adding new book...", book);
-      return book.save();
+      try {
+        await book.save();
+      } catch (e) {
+        console.log("addBook catch tehty bookissa");
+        throw new GraphQLError("Adding book failed", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.name,
+            e,
+          },
+        });
+      }
+
+      return book;
     },
 
     editAuthor: async (root, args) => {
@@ -141,7 +166,19 @@ const resolvers = {
         console.log("Author muutoksen jälkeen");
         console.log(author);
         authorList = authorList.map((auth) => (auth.id !== id ? auth : author));
-        return author.save();
+        try {
+          await author.save();
+        } catch (e) {
+          console.log("editAuth catch tehty");
+          throw new GraphQLError("Editing author failed", {
+            extensions: {
+              code: "BAD_USER_INPUT",
+              invalidArgs: args.name,
+              e,
+            },
+          });
+        }
+        return author;
       }
     },
   },
