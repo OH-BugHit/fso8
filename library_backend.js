@@ -66,9 +66,13 @@ const typeDefs = `
   }
 `;
 
-const getAll = async () => {
+const getAllAuthors = async () => {
   const authors = await Author.find({});
-  return authors.map((e) => (e = e.name));
+  return authors;
+};
+const getAllBooks = async () => {
+  const books = await Book.find({});
+  return books;
 };
 
 const resolvers = {
@@ -100,21 +104,23 @@ const resolvers = {
 
     allAuthors: async () => {
       console.log("Fetching all authors...");
-      /*
-      const authorWithBookCount = authors.map((a) => ({
+      const authorList = await getAllAuthors();
+      const bookList = await getAllBooks();
+      const authorWithBookCount = authorList.map((a) => ({
         name: a.name,
         id: a.id,
         born: a.born,
-        bookCount: books.filter((b) => b.author === a.name).length,
+        bookCount: bookList.filter((b) => b.author === a.name).length,
       }));
+      authorWithBookCount;
+
       return authorWithBookCount;
-      */
-      return Author.find({});
     },
   },
   Mutation: {
     addBook: async (root, args) => {
-      const authorList = await getAll();
+      let authorList = await getAllAuthors();
+      authorList = authorList.map((e) => (e = e.name));
       if (!authorList.includes(args.author)) {
         console.log("Author is new author. Adding new author...");
         const author = new Author({
