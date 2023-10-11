@@ -1,8 +1,9 @@
 import { gql, useQuery, useMutation } from "@apollo/client";
 import Select from "react-select";
 import { useState } from "react";
+import DisplayMessage from "./DisplayMessage";
 
-const Authors = () => {
+const Authors = ({ setNotifyMessage }) => {
   let authors = [];
 
   //GraphicQL kysely. Muoto on helppo kopioda ApolloServer-sandboxista.
@@ -29,7 +30,17 @@ const Authors = () => {
   `;
 
   const [born, setBorn] = useState("");
-  const [editAuthor] = useMutation(UPDATE_AUTHOR);
+  // onError on graphQL virheenkäsittely
+  const [editAuthor] = useMutation(UPDATE_AUTHOR, {
+    onError: (e) => {
+      const messages = e.graphQLErrors.map((e) => e.message).join("\n");
+      console.log(messages);
+      DisplayMessage(setNotifyMessage, {
+        message: e.graphQLErrors.map((e) => e.message).join("\n"),
+        messageType: "error",
+      });
+    },
+  });
   const [selectedOption, setSelectedOption] = useState(null);
 
   //pollIntervall kyselee kun komponentti(nimenomainen sivu) on "aktiivinen"
@@ -50,6 +61,7 @@ const Authors = () => {
     editAuthor({
       variables: { name: selectedOption, setBornTo: born },
     });
+
     setBorn("");
   };
 

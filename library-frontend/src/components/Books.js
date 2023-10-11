@@ -13,7 +13,16 @@ const Books = () => {
     }
   `;
 
-  const result = useQuery(ALL_BOOKS, { pollInterval: 2000 });
+  const result = useQuery(
+    ALL_BOOKS,
+    { pollInterval: 2000 },
+    {
+      onError: (e) => {
+        const messages = e.graphQLErrors.map((e) => e.message).join("\n");
+        console.log(messages);
+      },
+    }
+  );
 
   if (result.loading) {
     return <div>loading...</div>;

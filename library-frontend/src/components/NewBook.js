@@ -1,7 +1,7 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import { useState } from "react";
+import DisplayMessage from "./DisplayMessage";
 
-// TÄNNE JONNEKIN JÄI
 const NEW_BOOK = gql`
   mutation AddBook(
     $title: String!
@@ -23,14 +23,23 @@ const NEW_BOOK = gql`
   }
 `;
 
-const NewBook = () => {
+const NewBook = ({ setNotifyMessage }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [published, setPublished] = useState("");
   const [genre, setGenre] = useState("");
   const [genres, setGenres] = useState([]);
 
-  const [createPerson] = useMutation(NEW_BOOK);
+  const [createPerson] = useMutation(NEW_BOOK, {
+    onError: (e) => {
+      const messages = e.graphQLErrors.map((e) => e.message).join("\n");
+      console.log(messages);
+      DisplayMessage(setNotifyMessage, {
+        message: e.graphQLErrors.map((e) => e.message).join("\n"),
+        messageType: "error",
+      });
+    },
+  });
 
   const submit = async (event) => {
     event.preventDefault();
