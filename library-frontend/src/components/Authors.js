@@ -46,7 +46,7 @@ const Authors = () => {
   //Perus onSubmit
   const submit = async (event) => {
     event.preventDefault();
-    console.log("add book...");
+    console.log("setting birth year...");
     editAuthor({
       variables: { name: selectedOption, setBornTo: born },
     });
