@@ -13,9 +13,23 @@ tr {
   width: max-content;
 }
 
+td {
+  width: fit-content;
+  padding: 5px;
+}
+
+.trHead {
+  text-align: left;
+}
+
 .topMenu {
   text-align: center;
   padding: 5px;
+}
+
+.kirjalista {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 ul {
@@ -36,8 +50,9 @@ li {
 }
 
 h2 {
+  text-align: center;
   color: rgb(0, 0, 0);
-  padding: 5px;
+  padding: 8px;
 }
 
 h3 {

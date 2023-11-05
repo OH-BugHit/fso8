@@ -34,12 +34,12 @@ const Books = () => {
     <div>
       <h2>books</h2>
 
-      <table>
+      <table className="kirjalista">
         <tbody>
           <tr>
-            <th></th>
-            <th>author</th>
-            <th>published</th>
+            <th className="trHead">Title</th>
+            <th className="trHead">Author</th>
+            <th className="trHead">Published</th>
           </tr>
           {books.map((a) => (
             <tr key={a.title}>

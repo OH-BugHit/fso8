@@ -79,9 +79,9 @@ const Authors = ({ setNotifyMessage }) => {
       <table>
         <tbody>
           <tr>
-            <th></th>
-            <th>born</th>
-            <th>books</th>
+            <th className="trHead">Name</th>
+            <th className="trHead">Born</th>
+            <th className="trHead">Books</th>
           </tr>
           {authors.map((a) => (
             <tr key={a.name}>
