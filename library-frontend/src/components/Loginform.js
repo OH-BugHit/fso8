@@ -31,7 +31,7 @@ const Login = ({ setNotifyMessage, setToken }) => {
   const submit = async (event) => {
     event.preventDefault();
 
-    console.log("add book...");
+    console.log("Login...");
     login({
       variables: { username: username, password: password },
     });

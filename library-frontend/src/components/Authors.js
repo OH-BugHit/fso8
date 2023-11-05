@@ -1,33 +1,11 @@
-import { gql, useQuery, useMutation } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import Select from "react-select";
 import { useState } from "react";
 import DisplayMessage from "./DisplayMessage";
+import { ALL_AUTHORS, UPDATE_AUTHOR } from "../queries";
 
 const Authors = ({ setNotifyMessage }) => {
   let authors = [];
-
-  //GraphicQL kysely. Muoto on helppo kopioda ApolloServer-sandboxista.
-  const ALL_AUTHORS = gql`
-    query {
-      bookCount
-      authorCount
-      allAuthors {
-        name
-        born
-        bookCount
-      }
-    }
-  `;
-
-  //Mutaation editAuthor toteutus.
-  const UPDATE_AUTHOR = gql`
-    mutation EditAuthor($name: String!, $setBornTo: Int!) {
-      editAuthor(name: $name, setBornTo: $setBornTo) {
-        born
-        name
-      }
-    }
-  `;
 
   const [born, setBorn] = useState("");
   // onError on graphQL virheenkäsittely
@@ -75,7 +53,7 @@ const Authors = ({ setNotifyMessage }) => {
 
   return (
     <div>
-      <h2>authors</h2>
+      <h2>Authors</h2>
       <table>
         <tbody>
           <tr>

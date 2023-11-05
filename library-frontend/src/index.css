@@ -32,6 +32,16 @@ td {
   margin-right: auto;
 }
 
+.painikkeet {
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.genreRivi {
+  text-align: center;
+  padding-top: 10px;
+}
+
 ul {
   padding-left: 10px;
   padding-right: 10px;
@@ -57,6 +67,12 @@ h2 {
 
 h3 {
   color: rgb(36, 36, 36);
+}
+
+h4 {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
 input {
