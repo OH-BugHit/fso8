@@ -1,12 +1,9 @@
 import { gql, useQuery } from "@apollo/client";
-import { ALL_BOOKS, BOOKS_BY_GENRE } from "../queries";
+import { ALL_BOOKS } from "../queries";
 import { useState } from "react";
 
 const Books = () => {
   const [selectedGenre, setSelectedGenre] = useState(null);
-
-  let books = [];
-  let booksByGenre = [];
 
   const booksToShowResult = useQuery(
     gql`
@@ -31,27 +28,22 @@ const Books = () => {
     }
   );
 
-  const booksForGenre = useQuery(
-    ALL_BOOKS,
-    {
-      pollInterval: 2000,
+  const booksForGenre = useQuery(ALL_BOOKS, {
+    onError: (e) => {
+      const messages = e.graphQLErrors.map((e) => e.message).join("\n");
+      console.log(messages);
     },
-    {
-      onError: (e) => {
-        const messages = e.graphQLErrors.map((e) => e.message).join("\n");
-        console.log(messages);
-      },
-    }
-  );
+  });
 
   if (booksToShowResult.loading || booksForGenre.loading) {
     return <div>loading...</div>;
   }
 
-  books = booksForGenre.data.allBooks;
-  const genres = [...new Set(books.flatMap((book) => book.genres || []))]; // Otetaan genret talteen kaikista kirjoista
-
-  booksByGenre = booksToShowResult.data.allBooks;
+  const genres = [
+    ...new Set(
+      booksForGenre.data.allBooks.flatMap((book) => book.genres || [])
+    ),
+  ]; // Otetaan genret talteen kaikista kirjoista
 
   return (
     <div>
@@ -64,7 +56,7 @@ const Books = () => {
             <th className="trHead">Author</th>
             <th className="trHead">Published</th>
           </tr>
-          {booksByGenre.map((a) => (
+          {booksToShowResult.data.allBooks.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author}</td>

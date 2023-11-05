@@ -1,5 +1,14 @@
 import { gql } from "@apollo/client";
 //GraphicQL kysely. Muoto on helppo kopioda ApolloServer-sandboxista.
+
+export const ME = gql`
+  query {
+    me {
+      favoriteGenre
+    }
+  }
+`;
+
 export const LOGIN = gql`
   mutation login($username: String!, $password: String!) {
     login(username: $username, password: $password) {

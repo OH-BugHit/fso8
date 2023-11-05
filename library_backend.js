@@ -102,10 +102,6 @@ const getAllBooks = async () => {
 const resolvers = {
   // Resolverit, eli nämä käsittelevät nimensä mukaiset pyynnöt
   Query: {
-    me: (root, args, context) => {
-      return context.currentUser;
-    },
-
     bookCount: async () => {
       return Book.collection.countDocuments(); // Tuota tällä olisi voinut tehdä vissiin sen kirjojen laskemisen authorille, mutta toteutettu eritavalla myöhemmin...
     },
@@ -119,11 +115,11 @@ const resolvers = {
       console.log("Fetching books...");
       let toReturn = await getAllBooks();
       if (args.genre) {
-        console.log("On genre");
+        console.log("Haetaan genren mukaan...");
         toReturn = toReturn.filter((b) => b.genres.includes(args.genre)); // Genren mukaan
       }
       if (args.author) {
-        console.log("On Authori");
+        console.log("Haetaan authorin mukaan...");
         toReturn = toReturn.filter((b) => b.author === args.author); // Authorin mukaan
       }
       return toReturn;
@@ -145,8 +141,9 @@ const resolvers = {
       return authorWithBookCount;
     },
 
-    me: async () => {
+    me: async (root, args, context) => {
       console.log("Fetching me...");
+      return context.currentUser;
     },
   },
   Mutation: {
@@ -215,16 +212,6 @@ const resolvers = {
           },
         });
       }
-      /* TÄÄ TARKISTUS TURHA??
-      if (!currentUser.username === args.name) {
-        console.log("Väärä henkilö");
-        throw new GraphQLError("This is not you", {
-          extensions: {
-            type: "BAD_USER_INPUT",
-          },
-        });
-      }
-      */
       let authorList = await getAllAuthors();
       const author = authorList.find((p) => p.name === args.name);
       if (author) {

@@ -30,7 +30,7 @@ const NewBook = ({ setNotifyMessage }) => {
   const [genre, setGenre] = useState("");
   const [genres, setGenres] = useState([]);
 
-  const [createPerson] = useMutation(NEW_BOOK, {
+  const [createBook] = useMutation(NEW_BOOK, {
     onError: (e) => {
       const messages = e.graphQLErrors.map((e) => e.message).join("\n");
       console.log(messages);
@@ -45,7 +45,7 @@ const NewBook = ({ setNotifyMessage }) => {
     event.preventDefault();
 
     console.log("add book...");
-    createPerson({
+    createBook({
       variables: { title, author, published, genres },
     });
 
