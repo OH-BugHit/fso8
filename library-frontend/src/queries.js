@@ -17,19 +17,6 @@ export const LOGIN = gql`
   }
 `;
 
-/*
-export const ALL_BOOKS = gql`
-  query AllBooks {
-    allBooks {
-      author
-      published
-      title
-      genres
-    }
-  }
-`;
-*/
-
 export const ALL_BOOKS = gql`
   query AllBooks($genre: String) {
     allBooks(genre: $genre) {
