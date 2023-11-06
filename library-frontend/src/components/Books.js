@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { ALL_BOOKS } from "../queries";
 import { useState } from "react";
 
@@ -6,17 +6,7 @@ const Books = () => {
   const [selectedGenre, setSelectedGenre] = useState(null);
 
   const booksToShowResult = useQuery(
-    gql`
-      query AllBooks($genre: String) {
-        allBooks(genre: $genre) {
-          author
-          genres
-          published
-          title
-          id
-        }
-      }
-    `,
+    ALL_BOOKS,
     {
       variables: { genre: selectedGenre },
     },
@@ -45,6 +35,11 @@ const Books = () => {
     ),
   ]; // Otetaan genret talteen kaikista kirjoista
 
+  const allClickHandler = async () => {
+    setSelectedGenre(null);
+    await booksToShowResult.refetch(); // päivitetään kaikkien lista
+  };
+
   return (
     <div>
       <h2>Books</h2>
@@ -66,7 +61,7 @@ const Books = () => {
         </tbody>
       </table>
       <div className="genreRivi">
-        <button className="painikkeet" onClick={() => setSelectedGenre(null)}>
+        <button className="painikkeet" onClick={() => allClickHandler()}>
           All genres
         </button>
         {genres.map((genre) => (
