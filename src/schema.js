@@ -1,4 +1,8 @@
 const typeDefs = `
+  type Subscription {
+    bookAdded: Book!
+  }
+
   type Mutation {
     addBook(
       title: String!

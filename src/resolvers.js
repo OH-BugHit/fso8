@@ -1,6 +1,8 @@
 const Book = require("./models/bookSchema");
 const Author = require("./models/AuthorSchema");
 const User = require("./models/UserSchema");
+const { PubSub } = require("graphql-subscriptions");
+const pubsub = new PubSub();
 
 const getAllAuthors = async () => {
   // Tämä metodi palauttaa tututusti kaikki esiintymät kun ei määritellä mitä etsitään tuolla .find
@@ -112,6 +114,7 @@ const resolvers = {
           },
         });
       }
+      pubsub.publish("BOOK_ADDED", { bookAdded: book }); // Tekee julkaisun uudelle kirjalle kaikille jotka tilanneet
       return book;
     },
 
@@ -187,6 +190,12 @@ const resolvers = {
         id: user._id,
       };
       return { value: jwt.sign(userForToken, process.env.JWT_SECRET) };
+    },
+  },
+  Subscription: {
+    // Resolveri tilaukselle
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator("BOOK_ADDED"),
     },
   },
 };
