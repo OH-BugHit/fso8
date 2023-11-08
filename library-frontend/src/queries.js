@@ -1,6 +1,23 @@
 import { gql } from "@apollo/client";
 //GraphicQL kysely. Muoto on helppo kopioda ApolloServer-sandboxista.
 
+export const updateCache = (cache, query, addedBook) => {
+  // Estää dublikaatit jos lisätään uusi kirja. (Subrcribe lisää cacheen ja NewBook myös)
+  const uniqByName = (a) => {
+    let seen = new Set();
+    return a.filter((item) => {
+      let k = item.name;
+      return seen.has(k) ? false : seen.add(k);
+    });
+  };
+
+  cache.updateQuery(query, ({ allBooks }) => {
+    return {
+      allBooks: uniqByName(allBooks.concat(addedBook)),
+    };
+  });
+};
+
 export const ME = gql`
   query {
     me {
@@ -46,6 +63,18 @@ export const UPDATE_AUTHOR = gql`
     editAuthor(name: $name, setBornTo: $setBornTo) {
       born
       name
+    }
+  }
+`;
+
+export const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      author
+      genres
+      published
+      title
+      id
     }
   }
 `;

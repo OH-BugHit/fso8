@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import DisplayMessage from "./DisplayMessage";
 import { LOGIN } from "../queries";
 
-const Login = ({ setNotifyMessage, setToken, setFavoriteGenre }) => {
+const Login = ({ setNotifyMessage, setToken }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 

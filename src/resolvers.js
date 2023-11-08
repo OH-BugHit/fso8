@@ -3,6 +3,7 @@ const Author = require("./models/AuthorSchema");
 const User = require("./models/UserSchema");
 const { PubSub } = require("graphql-subscriptions");
 const pubsub = new PubSub();
+const jwt = require("jsonwebtoken");
 
 const getAllAuthors = async () => {
   // Tämä metodi palauttaa tututusti kaikki esiintymät kun ei määritellä mitä etsitään tuolla .find

@@ -2,6 +2,7 @@ import { gql, useMutation } from "@apollo/client";
 import { useState } from "react";
 import DisplayMessage from "./DisplayMessage";
 import { ALL_BOOKS } from "../queries";
+import { updateCache } from "../queries";
 
 const NEW_BOOK = gql`
   mutation AddBook(
@@ -45,6 +46,7 @@ const NewBook = ({ setNotifyMessage }) => {
           },
         });
       });
+
       const { allBooks } = cache.readQuery({ query: ALL_BOOKS }); // Päivitetään genrejen saantia varten. Oikeasti tehtäisiin backendiin oma kysely tälle josta saisi pelkät genret.
       cache.writeQuery({
         query: ALL_BOOKS,

@@ -7,9 +7,14 @@ import {
   ApolloProvider,
   InMemoryCache,
   createHttpLink,
+  split,
 } from "@apollo/client";
 import { BrowserRouter as Router } from "react-router-dom";
 import { setContext } from "@apollo/client/link/context";
+
+import { getMainDefinition } from "@apollo/client/utilities";
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { createClient } from "graphql-ws";
 
 const authLink = setContext((_, { headers }) => {
   // asetetaan headereihin token joka tallennettu localStorage 'user-token'
@@ -17,7 +22,7 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      Authorization: token ? `Bearer ${token}` : null, //muista ihan normaalisti käyttää oikeita pilkkuja....
+      Authorization: token ? `Bearer ${token}` : null, //muista ihan normaalisti käyttää oikeita pilkkuja heittomerkkeinä....
     },
   };
 });
@@ -27,9 +32,27 @@ const httpLink = createHttpLink({
   uri: "http://localhost:4000",
 });
 
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: "ws://localhost:4000",
+  })
+);
+
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === "OperationDefinition" &&
+      definition.operation === "subscription"
+    );
+  },
+  wsLink,
+  authLink.concat(httpLink)
+);
+
 const client = new ApolloClient({
   cache: new InMemoryCache(),
-  link: authLink.concat(httpLink), // eli tää sen sijaan että uri: http://...
+  link: splitLink,
 });
 
 ReactDOM.createRoot(document.getElementById("root")).render(

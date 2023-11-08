@@ -2,11 +2,13 @@ import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import Loginform from "./components/Loginform";
-import { Link, Routes, Route, Navigate } from "react-router-dom";
+import { Link, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import Notification from "./components/Notification";
 import Recommendations from "./components/Recommendations";
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient, useSubscription } from "@apollo/client";
+import { ALL_BOOKS, BOOK_ADDED } from "./queries";
+import { updateCache } from "./queries";
 
 const App = () => {
   const client = useApolloClient();
@@ -15,6 +17,16 @@ const App = () => {
   const [notifyMessage, setNotifyMessage] = useState({
     message: null,
     messageType: "success",
+  });
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      const addedBook = data.data.bookAdded;
+      //updateCache(client.cache, { query: ALL_BOOKS }, addedBook);
+      window.alert(
+        `New book by ${addedBook.author} has been added with title '${addedBook.title}'`
+      );
+    },
   });
 
   const logout = () => {
