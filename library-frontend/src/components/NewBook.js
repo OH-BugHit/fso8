@@ -2,7 +2,6 @@ import { gql, useMutation } from "@apollo/client";
 import { useState } from "react";
 import DisplayMessage from "./DisplayMessage";
 import { ALL_BOOKS } from "../queries";
-import { updateCache } from "../queries";
 
 const NEW_BOOK = gql`
   mutation AddBook(
@@ -36,7 +35,10 @@ const NewBook = ({ setNotifyMessage }) => {
     update: (cache, { data: { addBook } }) => {
       // Update the cache for the ALL_BOOKS query
       genres.forEach((element) => {
-        const { allBooks } = cache.readQuery({ query: ALL_BOOKS }); // Tää toimii muuten hyvin, mutta muista että ID puuttuu kun liitetään tolla concatilla vaan. Id:hän tulisi MongoDB:stä
+        const { allBooks } = cache.readQuery({
+          query: ALL_BOOKS,
+          variables: element,
+        }); // Tää toimii muuten hyvin, mutta muista että ID puuttuu kun liitetään tolla concatilla vaan. Id:hän tulisi MongoDB:stä
         cache.writeQuery({
           // Mutta näin siis päivittää forEach genre mitä laitettu niin kaikki genrekohtaiset kyselyt sit kun niitä haluttaisiin näyttää.
           query: ALL_BOOKS,

@@ -8,7 +8,6 @@ import Notification from "./components/Notification";
 import Recommendations from "./components/Recommendations";
 import { useApolloClient, useSubscription } from "@apollo/client";
 import { ALL_BOOKS, BOOK_ADDED } from "./queries";
-import { updateCache } from "./queries";
 
 const App = () => {
   const client = useApolloClient();
@@ -22,7 +21,24 @@ const App = () => {
   useSubscription(BOOK_ADDED, {
     onData: ({ data }) => {
       const addedBook = data.data.bookAdded;
-      //updateCache(client.cache, { query: ALL_BOOKS }, addedBook);
+      console.log(addedBook.genres);
+      addedBook.genres.forEach((element) => {
+        try {
+          const { allBooks } = client.cache.readQuery({
+            query: ALL_BOOKS,
+            variables: { genre: element },
+          });
+          client.cache.writeQuery({
+            query: ALL_BOOKS,
+            variables: { genre: element },
+            data: {
+              allBooks: allBooks.concat(addedBook),
+            },
+          });
+        } catch {
+          client.refetchQueries({ include: [ALL_BOOKS] }); // lisättiin uusi genre, haetaan kaikki kirjat koska tää meni vaikeaksi päivittää genreluettelo ja kaikki kirjat...
+        } // nyt tosin genrekohtaiset haut säilyy ennalla, eikä niitä tehdä uudestaan. Ja toimii tolla päivityksellä // All genres päivittyy viimeistään kun painetaan sitä uudestaan
+      });
       window.alert(
         `New book by ${addedBook.author} has been added with title '${addedBook.title}'`
       );
