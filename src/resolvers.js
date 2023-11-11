@@ -7,11 +7,13 @@ const jwt = require("jsonwebtoken");
 
 const getAllAuthors = async () => {
   // Tämä metodi palauttaa tututusti kaikki esiintymät kun ei määritellä mitä etsitään tuolla .find
+  console.log("haetaan kaikki authorit tietokannasta");
   const authors = await Author.find({});
   return authors;
 };
 const getAllBooks = async () => {
   // sama homma kun yllä
+  console.log("haetaan kaikki kirjat tietokannasta");
   const books = await Book.find({});
   return books;
 };
